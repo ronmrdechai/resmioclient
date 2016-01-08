@@ -91,22 +91,6 @@ class ResmioClient(object):
         data["checksum"] = availablity["checksum"]
         return data
 
-    def _create_headers(self):
-        """
-        Generate headers for the HTTP request.
-        """
-        return {
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "en-US,en;q=0.8,he;q=0.6,de;q=0.4",
-            "Connection": "keep-alive",
-            "Content-Type": "application/json",
-            "Host": "app.resmio.com",
-            "Origin": "https://app.resmio.com",
-            "X-NewRelic-ID": "Uw8GUFRQGwcEV1lbAgM=",
-            "X-Requested-With": "XMLHttpRequest"
-        }
-
     def request_seats(self, date, number=2, name="",
                       email="", phone="", comment=""):
         """
@@ -119,10 +103,8 @@ class ResmioClient(object):
         :param comment: A comment to attach to the order.
         """
         data = self._create_data(date, number, name, email, phone, comment)
-        headers = self._create_headers()
         res = requests.post(self._base_url + "bookings",
-                            data=json.dumps(data),
-                            headers=headers)
+                            data=json.dumps(data))
         if res.status_code == 201:
             return res.json()["ref_num"]
         else:
