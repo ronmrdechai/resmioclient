@@ -83,7 +83,6 @@ class ResmioClient(object):
             "price_change": 0,
             "num": number,
             "phone": phone,
-            "source": "localhost"
         }
         availablity = self._get_availablity(date)
         if availablity["available"] < number:
