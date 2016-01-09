@@ -15,6 +15,8 @@ from pytz import timezone
 
 from docopt import docopt
 
+__version__ = "0.1"
+
 
 class ResmioClient(object):
     """
@@ -113,4 +115,51 @@ class ResmioClient(object):
                 (res.status_code, res.text))
 
     def __repr__(self):
-        return '<ResmioClient v1/%s>' % self._facility
+        return "<ResmioClient v1/%s>" % self._facility
+
+
+if __name__ == "__main__":
+    doc = """
+resmioclient: A Python client for Resmio.
+
+Usage:
+    resmioclient <facility> [options]
+    resmioclient (-h | --help | --version)
+
+Options:
+    -d DAY --day=DAY     The day to order. [default: today]
+    -t TIME --time=TIME  The time to order. [default: 22:00]
+    -n NUM --number NUM  The amount of seats to order. [default: 2]
+
+    --name NAME          Your name.
+    --email EMAIL        Your email address.
+    --phone PHONE        Your phone number.
+    --comment COMMENT    A comment to send with the order.
+"""
+    opts = docopt(doc, version=__version__)
+    if opts["--day"] == "today":
+        day = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    else:
+        try:
+            day = datetime.strptime(opts["--day"], "%Y-%m-%d")
+        except ValueError:
+            print "Error: day should be in format: YYYY-MM-DD"
+            sys.exit(2)
+    try:
+        time = datetime.strptime(opts["--time"], "%H:%M")
+    except ValueError:
+        print "Error: time should be in format: HH:MM"
+        sys.exit(2)
+    date = day.replace(hour=time.hour, minute=time.minute)
+    client = ResmioClient(opts["<facility>"])
+    try:
+        ref_num = client.request_seats(date,
+                                       number=int(opts["--number"]),
+                                       name=opts["--name"],
+                                       email=opts["--email"],
+                                       phone=opts["--phone"],
+                                       comment=opts["--comment"])
+    except EnvironmentError, e:
+        print "Error:", e.message
+        sys.exit(1)
+    print "Your seats have been reserved, your reference number is:", ref_num
