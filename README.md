@@ -12,7 +12,7 @@ your seats should be reserved.
 from resmioclient import ResmioClient
 from datetime import datetime
 
-client = ResmioClient("pizze-hut")
+client = ResmioClient("pizza-hut")
 reference_num = client.request_seats(
         date=datetime(year=2015, month=12, day=31, hour=22),
         num=10)
