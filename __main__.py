@@ -161,4 +161,5 @@ Options:
     except EnvironmentError, e:
         print "Error:", e.message
         sys.exit(1)
-    print "Your seats have been reserved, your reference number is:", ref_num
+    print "Your seats have been reserved, your reference number is #%s" % \
+          ref_num
